@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SCRUB/DECK — Strip hidden metadata from photos &amp; video</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fragment+Mono:ital@0;1&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="metastyle.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand"><span class="mark"></span>SCRUB<span class="slash">/</span>DECK</div>
+    <div class="badge"><span class="dot"></span>runs 100% local — nothing uploaded</div>
+  </div>
+
+  <h1 class="headline">Photos and videos carry more than the picture.</h1>
+  <p class="sub">Camera model, GPS coordinates, timestamps, device IDs, software versions — quietly attached to every file you share. Drop one in and this scans it, shows you exactly what's hiding inside, and hands back a clean copy. Nothing leaves your device.</p>
+
+  <div class="dropzone-shell">
+    <div class="dropzone" id="dropzone">
+      <div class="bracket tl"></div><div class="bracket tr"></div>
+      <div class="bracket bl"></div><div class="bracket br"></div>
+      <input type="file" id="fileInput" hidden accept="image/*,video/*">
+      <p class="dz-label">Drop file to inspect</p>
+      <p class="dz-sub">or <button class="link-btn" id="browseBtn" type="button">browse your files</button></p>
+      <p class="dz-formats">JPG · PNG · WEBP · GIF &nbsp;/&nbsp; MP4 · MOV · M4V</p>
+    </div>
+  </div>
+
+  <section class="scan-panel hidden" id="scanPanel">
+    <div class="scan-file-row">
+      <div class="scan-thumb" id="scanThumb"><span class="glyph">FILE</span></div>
+      <div class="scan-fileinfo">
+        <div class="filename" id="fileName">—</div>
+        <div class="filemeta" id="fileMeta">—</div>
+      </div>
+      <div class="scan-status" id="scanStatus">Scanning…</div>
+    </div>
+    <div class="provenance hidden" id="provenanceRow"></div>
+    <div class="prov-caveat hidden" id="provenanceCaveat">Based on embedded metadata only — not proof. Metadata can be stripped, edited, or forged in either direction.</div>
+    <div class="manifest" id="manifest"></div>
+    <div class="result hidden" id="resultBlock">
+      <div class="stamp" id="stamp">Cleared</div>
+      <p class="result-copy" id="resultCopy"></p>
+      <div class="actions">
+        <a id="downloadBtn" class="btn-primary" download>Download scrubbed file</a>
+        <button id="resetBtn" class="btn-ghost" type="button">Scrub another file</button>
+      </div>
+    </div>
+    <div class="error-box hidden" id="errorBlock"></div>
+  </section>
+
+  <footer>
+    <p>Files are read and rewritten entirely in your browser's memory. <button class="link-btn" id="aboutBtn" type="button">How this works</button></p>
+    <div class="about hidden" id="aboutBox">
+      <h2>Images</h2>
+      <p>JPG, PNG, WEBP and GIF files are decoded and redrawn onto a blank canvas, then re-encoded from scratch. Only pixels survive that trip — EXIF, XMP, IPTC, and any text chunks are left behind. GIFs are flattened to their first frame.</p>
+      <h2>Video</h2>
+      <p>MP4, MOV and M4V files are rewritten at the container level: the <code>udta</code> and <code>meta</code> boxes (where GPS, device info, and encoder tags live), plus padding boxes, are cut out entirely, and creation/modification timestamps in the file's header are zeroed. Audio and video data are copied bit-for-bit — no re-encoding, no quality loss. Other containers (WebM, AVI, MKV) aren't supported yet, and a file is only offered for download if this rewrite can be done safely.</p>
+      <h2>AI-generation check</h2>
+      <p>Before stripping anything, the file is checked for provenance signals: IPTC/C2PA "Digital Source Type" declarations, Content Credentials (C2PA) blocks, and generator names left behind by tools like Midjourney, Stable Diffusion, ComfyUI, or Adobe Firefly in EXIF/XMP/PNG-text/MP4-metadata fields. This is metadata inspection, not image analysis — it can only report what a file's own tags claim about themselves, so it can't catch an AI image with metadata already removed, and (rarely) a tag could be forged. Note that scrubbing removes these provenance tags along with everything else, including legitimate C2PA disclosures.</p>
+      <h2>Why local</h2>
+      <p>The file never touches a server. If it did, "removing your metadata" would just mean moving it somewhere else.</p>
+    </div>
+  </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
