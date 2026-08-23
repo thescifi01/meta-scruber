@@ -223,3 +223,11 @@
   @media (prefers-reduced-motion: reduce){
     .m-row, .stamp, .redact-bar, .scanline{animation:none !important;}
   }
+
+.logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  margin-right: 8px;
+  vertical-align: middle;
+}
